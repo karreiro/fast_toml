@@ -1,6 +1,6 @@
 [package]
 name = "fast_toml"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Guilherme Carreiro <karreiro@gmail.com>"]
 license = "MIT"
@@ -10,4 +10,5 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-magnus = { version = "0.6.2" }
+magnus = "0.6.4"
+toml = "0.8.13"
