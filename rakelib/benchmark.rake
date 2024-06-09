@@ -26,7 +26,7 @@ TOML
 
 namespace :benchmark do
   desc 'Benchmark different TOML parsers (ips)'
-  task :ips do
+  task ips: :env do
     Benchmark.ips do |x|
       x.report('fast_toml')    { FastToml.parse(TOML_INPUT) }
       x.report('toml')         { TOML::Parser.new(TOML_INPUT).parsed }
@@ -39,7 +39,7 @@ namespace :benchmark do
   end
 
   desc 'Benchmark different TOML parsers (ms)'
-  task :ms do
+  task ms: :env do
     n = 5_000
 
     Benchmark.bm(20) do |x|

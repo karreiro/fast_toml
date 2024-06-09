@@ -1,30 +1,61 @@
 # FastToml
 
-TODO: Delete this and the text below, and describe your gem
+[![Ruby](https://github.com/karreiro/fast_toml/actions/workflows/ci.yml/badge.svg)](https://github.com/karreiro/fast_toml/actions/workflows/ci.yml)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fast_toml`. To experiment with that code, run `bin/console` for an interactive prompt.
+FastToml is a high-performance TOML parser for Ruby. It significantly outperforms other TOML parsers available in the Ruby ecosystem by wrapping the Rust `toml` parser in a native extension. FastToml is currently more than twice as fast as the next best parser and nearly 200 times faster than some others.
+
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+To install FastToml, add it to your application's Gemfile by executing:
 
-Install the gem and add to the application's Gemfile by executing:
-
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```
+$ bundle add fast_toml
+```
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```
+$ gem install fast_toml
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+To use FastToml, require the gem and parse your TOML input as shown in the example below:
+
+```ruby
+require 'fast_toml'
+
+TOML_INPUT = <<~TOML
+  [package]
+  name = "fast_toml"
+  version = "0.1.0"
+  edition = "2021"
+  license = "MIT"
+
+  [dependencies]
+  magnus = "0.6.4"
+  toml = "0.8.13"
+TOML
+
+parsed_data = FastToml.parse(TOML_INPUT)
+```
 
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
+
+## Releasing a New Version
+
+To release a new version, follow these steps:
+- Bump the version number in `lib/fast_toml/version.rb`
+- Bump the version number in `ext/fast_toml/Cargo.toml`
+- Run `bundle install && bundle rake`
+- Push your commit
+- Push a new tag called `vX.Y.Z`
+- Create a release using the GitHub UI
 
 ## Contributing
 
@@ -36,4 +67,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the FastToml project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/fast_toml/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the FastToml project's codebases, issue trackers, chat rooms, and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/fast_toml/blob/main/CODE_OF_CONDUCT.md).

@@ -6,7 +6,6 @@ require 'bundler/gem_tasks'
 require 'minitest/test_task'
 require 'rubocop/rake_task'
 require 'rb_sys/extensiontask'
-require 'lib/fast_toml'
 
 Minitest::TestTask.create
 

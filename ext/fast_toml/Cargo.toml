@@ -1,6 +1,6 @@
 [package]
 name = "fast_toml"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 authors = ["Guilherme Carreiro <karreiro@gmail.com>"]
 license = "MIT"
@@ -12,3 +12,19 @@ crate-type = ["cdylib"]
 [dependencies]
 magnus = "0.6.4"
 toml = "0.8.13"
+rb-sys = { version = "0.9.85", features = [
+  "bindgen-rbimpls",
+  "bindgen-deprecated-types",
+  "stable-api-compiled-fallback",
+] }
+
+[dev-dependencies]
+rb-sys = { version = "0.9.85", features = [
+  "link-ruby",
+  "bindgen-rbimpls",
+  "bindgen-deprecated-types",
+  "stable-api-compiled-fallback",
+] }
+
+[build-dependencies]
+rb-sys-env = { version = "0.1.2" }
