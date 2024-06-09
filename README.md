@@ -26,7 +26,7 @@ To use FastToml, require the gem and parse your TOML input as shown in the examp
 ```ruby
 require 'fast_toml'
 
-TOML_INPUT = <<~TOML
+parsed_data = FastToml.parse <<~TOML
   [package]
   name = "fast_toml"
   version = "0.1.0"
@@ -37,8 +37,6 @@ TOML_INPUT = <<~TOML
   magnus = "0.6.4"
   toml = "0.8.13"
 TOML
-
-parsed_data = FastToml.parse(TOML_INPUT)
 ```
 
 ## Development
