@@ -4,6 +4,7 @@ use magnus::prelude::*;
 use magnus::value::{InnerValue, Lazy};
 use magnus::RModule;
 use magnus::{IntoValue, RArray, RHash, Ruby};
+use chrono::{DateTime, NaiveDate, NaiveDateTime, NaiveTime};
 
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), magnus::Error> {
@@ -51,13 +52,50 @@ fn fast_toml_module(ruby_api: &Ruby) -> RModule {
     .get_inner_with(ruby_api)
 }
 
+fn date_to_ruby_value(date: toml::value::Datetime) -> magnus::Value {
+    let ruby_api = Ruby::get().unwrap();
+    let date_string = date.to_string();
+
+    // List with different dates and times format, from https://toml.io/en/
+    let formats = [
+        "%Y-%m-%dT%H:%M:%SZ",      // UTC time
+        "%Y-%m-%dT%H:%M:%S%:z",    // ISO 8601 with timezone
+        "%Y-%m-%dT%H:%M:%S%.f%:z", // ISO 8601 with microseconds and timezone
+        "%Y-%m-%dT%H:%M:%S",       // ISO 8601 without timezone
+        "%Y-%m-%dT%H:%M:%S%.f",    // ISO 8601 with microseconds
+        "%Y-%m-%d",                // Date only
+        "%H:%M:%S",                // Time only
+        "%H:%M:%S%.f",             // Time with microseconds
+    ];
+
+    for format in &formats {
+        if let Ok(parsed_date) = DateTime::parse_from_rfc3339(&date_string) {
+            let date_time_string = parsed_date.to_rfc3339();
+            let date_time_class = ruby_api.eval::<magnus::Value>("DateTime").unwrap();
+            return date_time_class.funcall("parse", (date_time_string,)).unwrap();
+        } else if let Ok(parsed_date) = NaiveDateTime::parse_from_str(&date_string, format) {
+            let date_time_string = parsed_date.format("%Y-%m-%dT%H:%M:%S%.f").to_string();
+            let date_time_class = ruby_api.eval::<magnus::Value>("DateTime").unwrap();
+            return date_time_class.funcall("parse", (date_time_string,)).unwrap();
+        } else if let Ok(parsed_date) = NaiveDate::parse_from_str(&date_string, format) {
+            let date_class = ruby_api.eval::<magnus::Value>("Date").unwrap();
+            return date_class.funcall("parse", (parsed_date.to_string(),)).unwrap();
+        } else if let Ok(parsed_time) = NaiveTime::parse_from_str(&date_string, format) {
+            return parsed_time.format("%H:%M:%S%.f").to_string().into_value();
+        }
+    }
+
+    // Fallback to String, if non of the formats match
+    date_string.into_value()
+}
+
 fn to_ruby_value(value: toml::Value) -> magnus::Value {
     match value {
         toml::Value::String(string) => string.into_value(),
         toml::Value::Integer(integer) => integer.into_value(),
         toml::Value::Float(float) => float.into_value(),
         toml::Value::Boolean(boolean) => boolean.into_value(),
-        toml::Value::Datetime(date) => date.to_string().into_value(),
+        toml::Value::Datetime(date) => date_to_ruby_value(date),
         toml::Value::Array(rust_array) => {
             let ruby_array = RArray::new();
 
@@ -80,3 +118,4 @@ fn to_ruby_value(value: toml::Value) -> magnus::Value {
         }
     }
 }
+
