@@ -12,6 +12,7 @@ crate-type = ["cdylib"]
 [dependencies]
 magnus = "0.6.4"
 toml = "0.8.13"
+chrono = "0.4.38"
 rb-sys = { version = "0.9.85", features = [
   "bindgen-rbimpls",
   "bindgen-deprecated-types",
